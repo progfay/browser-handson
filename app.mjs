@@ -1,13 +1,13 @@
 import { readFile } from 'fs/promises';
 import { resolve } from 'path';
 import { readFileSync } from 'fs';
-import { createServer } from 'https';
+import { createSecureServer } from 'http2';
 import { on } from 'events';
 import mime from 'mime-types';
 
 const port = 3000;
 const reqs = on(
-  createServer({
+  createSecureServer({
     key: readFileSync("./cert.key"),
     cert: readFileSync("./cert.crt"),
   }).listen(port),
@@ -74,7 +74,7 @@ async function staticFile(url, req, res) {
 }
 
 for await (const [req, res] of reqs) {
-  const url = new URL(req.url, `http://${req.headers.host}`);
+  const url = new URL(req.url, `${req.headers[':scheme']}://${req.headers[':authority']}`);
   console.log(url);
   try {
     if (url.pathname === "/" && req.method === "GET") {
