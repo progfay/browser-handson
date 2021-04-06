@@ -35,6 +35,9 @@ async function getIndex(req, res) {
     res.end();
     return;
   }
+  res.writeHead(302, {
+    "Location": "https://twitter.com/progfay"
+  });
   res.end("Login Success!!");
 }
 

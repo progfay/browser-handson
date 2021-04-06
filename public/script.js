@@ -48,6 +48,5 @@ function handleFormSubmit(event) {
   } else {
     // On a production site do form submission.
     signinButton.disabled = 'true';
-    event.preventDefault();
   }
 }
