@@ -3,6 +3,7 @@ import { resolve } from 'path';
 import { readFileSync } from 'fs';
 import { createSecureServer } from 'http2';
 import { on } from 'events';
+import querystring from 'querystring';
 import mime from 'mime-types';
 
 const port = 3000;
@@ -46,13 +47,20 @@ async function postLogin(req, res) {
     let data = "";
     req.on("data", (d) => { data += d });
     req.on("end", () => {
-      console.log(data);
-      // TODO: ここのデータのパースをしてください。
-      // ここで、リクエストの内容を取り出してIDとpasswordをチェックしてください。
-      // IDは yuki@example.com パスワードは yUki0525! ということにします。
-      res.writeHead(401);
-      // TODO: check login request and set cookie
-      res.end("Unauthorized");
+      const query = querystring.parse(data);
+      if (query['id'] !== 'yuki@example.com' || query['current-password'] !== 'yUki0525!')
+      {
+        res.writeHead(401);
+        res.end("Unauthorized");
+        resolve();
+        return;
+      }
+
+      res.writeHead(302, {
+        "Location": "/",
+        "Set-Cookie": "session-id=1;",
+      });
+      res.end("Found");
       resolve();
     });
   });
