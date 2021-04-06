@@ -17,9 +17,13 @@ const reqs = on(
 
 
 function isLogin(req) {
-  // TODO: check request cookie
   console.log(req.headers);
-  // ここで cookie をチェックして sessionid が有効なら true にしてください。
+  for (const kv of req.headers['cookie'].split('; ')) {
+    if (kv.startsWith('session-id=')) {
+      return kv.substr(11) === '1';
+    }
+  }
+
   return false;
 }
 
